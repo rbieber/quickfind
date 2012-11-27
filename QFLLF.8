@@ -1,0 +1,222 @@
+;-------------------------------------------------------------------------------
+;
+;  QFLLF.ASM
+;
+;  Quick Find Low-Level DOS functions.
+;
+;  Copyright (C) 1989-92 by Quick Solutions Inc; All rights reserved.
+;
+;
+;  This code MUST be assembled with the A86 assembler using the following
+;  command line:
+;
+;     A86 +C QFLLF.ASM TO QFLLF.OBJ
+;
+;------------------------------------------------------------------------------
+EOL   EQU   0
+
+
+_DATA SEGMENT WORD PUBLIC 'DATA'
+   EXTRN _errno:WORD
+   szPrinterName db 'PRN',EOL
+   hNewFile       dw 0
+   hStdOut        dw 0
+_DATA ENDS
+
+PUBLIC _wherex, _wherey, _gotoxy, _clreol, _isvalid, _floppies
+PUBLIC KEYFLUSH, KEYINPUT, ASSIGN, UNASSIGN
+
+;------------------------------------------------------------------------------
+;
+;  void wherex(void);
+;
+;  Get the current column position of the cursor.
+;
+;------------------------------------------------------------------------------
+_wherex:
+      mov   ax,0300h
+      xor   bx,bx
+      int   10h
+      xor   dh,dh
+      mov   ax,dx
+      retf
+
+;------------------------------------------------------------------------------
+;
+;  void wherey(void);
+;
+;  Get the current row position of the cursor.
+;
+;------------------------------------------------------------------------------
+_wherey:
+      mov   ax,0300h
+      xor   bx,bx
+      int   10h
+      xchg  dl,dh
+      xor   dh,dh
+      mov   ax,dx
+      retf
+
+;------------------------------------------------------------------------------
+;
+;  void gotoxy(int iColumn, int iRow);
+;
+;  Set the cursor position.
+;
+;------------------------------------------------------------------------------
+_gotoxy:
+      push  bp
+      mov   bp,sp
+      mov   dx,[bp+6]
+      mov   ax,[bp+8]
+      xchg  dh,al
+      mov   ah,02h
+      xor   bh,bh
+      int   10h
+      pop   bp
+      retf
+
+;------------------------------------------------------------------------------
+;
+;  void clreol(void);
+;
+;  Clear from the current position to the end of the line.
+;
+;------------------------------------------------------------------------------
+_clreol:
+      call  FAR _wherex
+      mov   cx,79
+      sub   cx,ax
+      mov   ax,0A20h
+      xor   bx,bx
+      int   10h
+      retf
+
+;------------------------------------------------------------------------------
+;
+;  int isvalid(int iDrive);
+;
+;  Returns TRUE if the given drive is a valid one, FALSE if otherwise.
+;
+;------------------------------------------------------------------------------
+_isvalid:
+      push  bp
+      mov   bp,sp
+      mov   ah,36h
+      mov   dx,[bp+6]
+      or    dl,dl
+      jz    L02
+      int   21h
+      cmp   ax,0FFFFh
+      jne   L03
+L02:  xor   ax,ax
+L03:  pop   bp
+      retf
+
+;------------------------------------------------------------------------------
+;
+;  int floppies(void);
+;
+;  Returns the number of floppy drives attached to the system.
+;
+;------------------------------------------------------------------------------
+_floppies:
+      push  es
+      xor   bx,bx
+      mov   es,bx
+      mov   bx,1040
+      mov   ax,word ptr es:[bx]
+      mov   cl,6
+      shr   ax,cl
+      and   ax,3
+      inc   ax
+      pop   es
+      retf
+
+;------------------------------------------------------------------------------
+;
+;  int unassign(void);
+;
+;  Redirects the file redirected to by the assign() function back to standard
+;  output.
+;
+;------------------------------------------------------------------------------
+UNASSIGN:
+      mov   ah,46h                           ; make stdout = hStdOut
+      mov   cx,1
+      mov   bx,[hStdOut]
+      int   21h
+      jc    >L95
+      xor   ax,ax
+      jmp   >L99
+L95:  mov   [_errno],ax                      ; there was an error.
+      mov   ax,0FFFFH
+L99:  mov   ah,3Eh
+      mov   bx,[hNewFile]
+      int   21h
+      mov   ax,1
+      jnc   >L100
+      xor   ax,ax
+L100: retf
+
+;------------------------------------------------------------------------------
+;
+;  int assign(char *szOutputFileName);
+;
+;  Redirects standard output to the specified file, or the printer if NULL
+;  is specified.
+;
+;------------------------------------------------------------------------------
+ASSIGN:
+      push  bp
+      mov   bp,sp
+      push  si
+      mov   si,word ptr [bp+6]
+      or    si,si
+      jne   >L01                             ; redirect to file ...
+      mov   dx,OFFSET szPrinterName
+      mov   ax,3D01h                         ; open for read/write
+      int   21h
+      jc    >L95
+      jmp   >L02
+L01:  mov   dx,word ptr [bp+6]               ; we're redirecting to a file,
+      mov   ah,3Ch                           ; so create one ...
+      xor   cx,cx
+      int   21h
+      jc    >L95
+L02:  mov   word ptr [hNewFile],ax           ; duplicate old stdout handle
+      mov   ah,45h
+      mov   bx,1                             ; stdout device handle
+      int   21h
+      jc    >L95
+      mov   word ptr [hStdOut],ax
+      mov   ah,46h                           ; make hNewFile = stdout
+      mov   bx,word ptr [hNewFile]
+      mov   cx,1
+      int   21h
+      jc    >L95
+      mov   word ptr [_errno],0              ; set any error variables to
+      mov   ax,1                             ; indicate no error.
+      jmp   >L99
+L95:  mov   word ptr [_errno],ax             ; there were no errors, tell the
+      call  FAR UNASSIGN                     ; program.
+      xor   ax,ax
+      jmp   >L99
+L99:  pop   si
+      pop   bp
+      retf   2
+
+KEYFLUSH:
+L01:  mov   ah,01h                           ; is there a key waiting??
+      int   16h
+      jz    >L02                             ; --no, get out
+      call  FAR KEYINPUT
+      jmp   L01                              ; loop until no keys left
+L02:  retf
+
+KEYINPUT:
+      xor   ax,ax
+      int   16h
+      xor   ah,ah
+L02:  retf
+

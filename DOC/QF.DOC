@@ -1,0 +1,227 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                   €€€€€€€€€€€€€€€€€€€€€€       €€€€€€€€€€€€€€€€€€
+                   €€€∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞€€€∞∞     €€€∞∞∞∞∞∞∞∞∞∞∞∞∞∞
+                   €€€∞∞              €€€∞∞     €€€∞∞
+                   €€€∞∞              €€€∞∞     €€€∞∞
+                   €€€∞∞              €€€∞∞     €€€€€€€€€€
+                   €€€∞∞              €€€∞∞     €€€∞∞∞∞∞∞
+                   €€€∞∞          €€€ €€€∞∞     €€€∞∞
+                   €€€∞∞          €€€ €€€∞∞     €€€∞∞
+                   €€€€€€€€€€€€€€€€€€€€€€∞∞     €€€∞∞
+                     ∞∞∞∞∞∞∞∞∞∞∞∞∞€€€∞∞∞∞∞∞      ∞∞∞∞
+                                  €€€∞
+                                   ∞∞∞
+
+
+
+
+                           A File Find/Delete Utility
+                    (C) Copyright 1989-95 by Ronald C. Bieber
+                              All rights reserved.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   Let's face it.  At one time or  another, your going to lose files.   Whether
+you misplace them in an out of  the way subdirectory, move them to a  different
+drive, or archive them.  Well,  don't worry.   Now there's  Quick Find.   Quick
+Find was written because, like  everyone,  I  lose  files  all  the  time,  and
+although there are a lot of "whereis" programs out there, none cover all of the
+aspects of finding files.  THIS ONE  DOES!   Here  are  some  of  Quick  Find's
+features:
+
+   1. FAST directory tree searching.
+   2. Capability to search every drive on your computer.
+   3. Search ONLY the current directory and it's subdirectories for a file.
+   4. Capability to search ARC, PAK, DWC, LHARC, PKZIP, ZOO, and LARC type
+      archive files.
+   5. Global delete function - Delete any unwanted duplicates, anywhere!
+   6. Support for MSDOS, OS/2 (text mode), and Windows NT (text mode)
+
+Command Line Usage:
+-------------------
+   The following command line switches are available with Quick Find:
+
+   /A  - Searches all drives on the system for the file specified.
+   /B  - Displays only the filename, no other information is displayed.
+   /C  - Starts in the current directory and searches all of it's branches.
+   /CF - Searches ARC, PAK, DWC, ZOO, LHARC/LZA, and LARC files.
+   /CO - Only displays files within a compressed file.
+   /D  - Prompted delete of found files.
+   /N  - Turns off delete prompting.  If this switch is not specified along
+         with the /D switch, you are prompted every time QF finds a file.
+   /P  - Pause mode.  Displays found files a screen at a time.
+   /T  - Prints totals by subdirectories, and then an overall total at the
+	 end of the search of files and directories found, and total bytes
+	 of files found.
+
+   Command line switches can  appear anywhere on the  command line, and can  be
+proceeded by either a '/' or '-'  character.  You can also set the  environment
+variable QF_OPT to switches you use often, so they do not have to be  specified
+upon every invocation of QF.
+
+Release Notes:
+--------------
+
+   August 7, 1989
+
+   As of this writing a  file was  being distributed  called LH114.EXE.   Since
+this is not an official release from  Yoshi, Quick Find will not support  files
+with the .ICE extension.
+
+Registration:
+-------------
+
+   If you find QF useful and convienient, and you use it often, you should
+register it.  Registration is $10.00 and can be sent to the following
+address:
+ 			  Ronald C. Bieber
+                       Quick Find Registration
+                          124 Newell Street
+                         Woodstock, IL 60098
+
+Revision History:
+-----------------
+   8.00  - Included Windows NT 3.5 (Text Mode) version.
+           No Microsoft Windows support will be done until Windows '98 release
+            
+   7.00  - Included OS/2 2.1 (Text Mode) version.
+   
+   6.00  - Rewrote command line parser again, and optimized all aspects of the
+           code, readying it for a Microsoft Windows port and release.
+           This version of Quick Find has been reverted back to the command
+           line interface, as this is more convienent, and results in smaller
+           code size than the version 5.00 text based window interface release.
+           A new DOS window library is in the works, that will give QF total
+           CUA compliance.  Until then, the command line, and soon to be
+           released Windows version will have to be sufficient.
+
+   5.00  - Added new "Quick Windows" menu interface.  Implemented a few more
+           speed optimizations to the code as well.
+
+   4.51  - Fixed LHARC archive searching.  When LZA 2.12 was released, QF had
+           trouble reading these files.  QF is now compatible with ALL versions
+           of LZA/LHARC versions to this date.  Also changed copyright
+           information to 'Quick Solutions', instead of my name.
+
+   4.50  - Re-wrote self verification feature, because old one was WAY too
+           slow.  This version should start searching almost immediately.
+           Also tried my hand at writing some assembler routines, to cut down
+           on the ever enlarging code size (without assembler routines, EXE
+           size was around 32.5K).  Didn't achieve a lot of space savings,
+           but got some assembler under my belt now (sigh).
+
+   4.01  - Added command line switch to enable redirection.
+
+   4.00  - Fixed a bug that wouldn't allow finding of filenames with a '-'
+           character as the FIRST character in the filename.
+
+           Fixed a bug when just QF ? was entered on the command line.  Now
+           this will give the same screen as if you had just typed QF<CR>.
+
+           Added /T switch to give subdirectory size and total breaks between
+           each directory search.
+
+   3.60  - Implemented a 32-bit CRC self-checking of the QF.EXE file upon
+           startup, to insure no tampering has been done to the file.
+
+           Implemented a total re-write of the command line parsing routine,
+           to fix a bug in it when there was a '-' or '/' character in the
+           file specification.
+
+           Removed DWC, LHARC, LARC and PKZIP self-extracting archive
+           searching for the sake of speed.  I did not realize the amount
+           of time it added to the compressed file searches when I added
+           it, thinking looking in SFX files was worth it.  In my opinion,
+           it's not.
+
+   3.51  - Minor bug fixes.
+
+   3.50  - Added DWC, LHARC, LARC and PKZIP self-extracting archive searching.
+
+   3.02  - Added more command line flexibility and the QF_OPT environment
+           variable processing to specify default command line switches.
+
+   3.01  - Stripped path from files in LZH files when displaying them.
+
+   3.00  - Added support for LARC version 3.33 and DWC version 4.95 archives.
+           Added the /E switch to list archive formats currently supported.
+
+   2.14  - Miscellaneous bug fixes.
+
+   2.13  - Changed compilers from Turbo C 2.00 to Microsoft C 5.1.  This led
+           to a substantial improvement in speed.  Also fixed bug when
+           searching all drives, would skip the C: drive if floppy B: was
+           present.
+
+           Included test results and batch file for comparison of QF to
+           Norton's File Find version 4.50.
+
+   2.12  - Added LHARC file support.  Added "Are you sure" prompt and warning
+           when using the /D /N switch combination.
+
+   2.11  - Added ZOO file support.  Fixed error checking when searching
+           compressed files.  Program would just hang up without telling you
+           there was an error.
+
+           Removed the /ARC, /O, /ZIP, and /ZO switches and replaced them with
+           /CF and /CO switches, to search ALL compressed files automatically.
+
+   2.10  - Added ZIP file searching and the global delete function.
+
+   2.00  - Added ARC and PAK file searching.
+
+   1.00  - Initial release -- plain "whereis" utility.
+
+-------------------------------------------------------------------------------
+FF and File Find are trademarks of Peter Norton Computing Inc.
+PKZIP is a registered trademark of PKWare, Inc.
+ARC is a trademark of System Enhancements Associates.
+PAK is a trademark of Nogate Consulting.
+ZOO was written by Rahul Dhesi.
+DWC was written by Dean W. Cooper.
+LARC was written by Miki/Okumura/Masuyama
+LHARC was written by Haruyasu Yoshizaki
+

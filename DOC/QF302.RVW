@@ -1,0 +1,56 @@
+This file is a review done by Patrick Grote on Quick Find Version 3.02.
+Reprinted by permission.
+========================================================================= 
+
+                     QF302 -- Go Fetch it Boy
+
+Lately I have noticed an onslaught of file find utilities. They promise a
+ton, but deliver an ounce. The perfect file find utility is the one that
+finds the file anywhere, and then brings it to you. I know there have
+been hundreds of times when I sit down to do a review and have lost the
+documentation. For me it means finding it in one of many directories.
+Then again it may still be in that LZH, or in that ZIP file. You get the
+idea. QF302 searches through the files and locates my missing
+documentation, quickly,
+
+
+DESCRIPTION:   QF302 is self described as a file find/delete utility. It
+               does live up to its description. Written by Ron Bieber,
+               the program flys through its assigned course bug free. It
+               costs nothing to use, but the author requests a $10.00
+               donation if you use the program often.
+
+USE: QF302 uses a command line for its user interface. You may select one
+     of eight switches. Everything from searching through compressed
+     files, to pausing when the screen is full. To demonstrate QF302's
+     great ability, lets take a look at one of my sessions. I was looking
+     for all my .DOC files so that I could print them out to help me
+     while I was ding my reviews. I didn't want to type PKZIP /V
+     FILENAME.ZIP *.DOC for every ZIP, so I had QF302 do the search for
+     me. The software came back with 30 listings, and since I was dumping
+     it to my printer I was able to get all the ones I needed, even in
+     the ZIPS! The program is lightning fast. It beat the hell out of
+     Norton's File Find. (W/O looking in the compressed files) The
+     neatest part about this whole deal is that QF302 will also DELETE
+     upon finding one of the programs. This is good for *.BAK files and
+     the like. One problem with the delete is that it will not let you
+     delete protected files. (Some may consider that a blessing) "Well,
+     where is the other shoe?" you ask. Right here. It would have been
+     nice if the program gave individual totals as it looked through the
+     subdirectory, rather than just one big total at the end. Filesize
+     list in conjunction with the files found would be good. Other than 
+     that the program is an exact work-alike of Norton's FF.
+
+SUMMARY:  QF302 is a great program. Just be ready for a generic 
+          interface.
+
+RATING FOR QF302:
+
+1-----------5----------10:
+ßßßßßßßßßßßßßßßßßßßßßß
+
+9.2 for the promise of being better than Norton and following through. As 
+usual, a better user interface would have been good. Also, subtotals 
+would be good during the subdirectory breaks.
+
+
