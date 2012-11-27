@@ -18,7 +18,9 @@ The time this was written was a _great_ time, when someone like me could just st
 
 Trust me, at the time it was cool.
 
-See the [DOCS](docs) directory for some other cool historical documentation, including a software review.
+See the [DOCS](quickfind/docs) directory for some other cool historical documentation, including a software review.
+
+Cool thing is, I made $10 off of all the hours that I put into this.   Yes, $10.
 
 
 
