@@ -18,6 +18,7 @@ The time this was written was a _great_ time, when someone like me could just st
 
 Trust me, at the time it was cool.
 
+See the [DOCS](docs) directory for some other cool historical documentation, including a software review.
 
 
 
