@@ -219,7 +219,6 @@ void PASCAL usage(BOOL bShowExtra)
    #endif
    printf("    /T          Print subdirectory totals\n");
 
-   #if 0
    if (bShowExtra)
       {
       printf("\nCompressed file formats currently supported:\n\n");
@@ -227,7 +226,8 @@ void PASCAL usage(BOOL bShowExtra)
       printf("    PAK         - Nogate Consulting       DWC   - Dean W. Cooper\n");
       printf("    ARC         - SEA, Inc.               ZOO   - Rahul Dhesi\n");
       printf("    LARC        - Miki/Okumarua/Masuyama  LHARC - Haruyasu Yoshizaki\n");
+      printf("Last compiled on %s\n", __DATE__);
       }
-   #endif
-   exit(0);
+   
+    exit(0);
 }

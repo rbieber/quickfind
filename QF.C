@@ -101,7 +101,7 @@ int main(int argc, const char **argv)
    ParseEnvironmentOptions("QF_OPT");
 
    if (!(parms(&argc, argv + 1) - 1))
-      usage(FALSE);
+      usage(TRUE);
    else
       argv++;
 
@@ -272,7 +272,7 @@ int PASCAL parms(PINT piArgc, PPSTR ppArgv)
       {
   
       if (**ppArg == '?' && !*(ppArg + 1))
-         usage(FALSE);
+         usage(TRUE);
 
       if (**ppArg == '/' || **ppArg == '-')
          {
