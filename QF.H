@@ -36,12 +36,12 @@
 
 struct find_t 
    {
-   unsigned	attrib;
-   time_t	time_create;	/* -1 for FAT file systems */
-   time_t	time_access;	/* -1 for FAT file systems */
-   time_t	time_write;
+   unsigned     attrib;
+   time_t       time_create;    /* -1 for FAT file systems */
+   time_t       time_access;    /* -1 for FAT file systems */
+   time_t       time_write;
    _fsize_t size;
-   char	   name[_MAX_PATH];
+   char    name[_MAX_PATH];
    long     search_handle;
    };
 
@@ -195,8 +195,8 @@ void far handler(unsigned, unsigned, unsigned far *); // Hardware error handler
 #ifndef _WINDOWS
 extern int PASCAL assign(PSTR);     // redirect output to a file
 extern int PASCAL unassign(void);         // 'un-redirection' routine
-extern int  wherey(void);
-extern int  wherex(void);
+extern int wherey(void);
+extern int wherex(void);
 extern void gotoxy(int, int);
 extern void clreol(void);
 extern void PASCAL KeyFlush(void);

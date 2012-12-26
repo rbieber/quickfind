@@ -155,8 +155,8 @@ void PASCAL ShowFileInfo(PFILESTUFF pfs)
          int   col = wherex(),
                row = wherey();         // current cursor position
 
-         printf("Program paused; press a key to continue ... ");
-
+         printf("Program paused; press a key to continue ... (ESC to quit).");
+         fflush(stdout);
          if (KeyInput() == VK_ESCAPE)
             c_break();
 

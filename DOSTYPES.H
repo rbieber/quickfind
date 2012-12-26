@@ -24,7 +24,7 @@ typedef unsigned char   BYTE;
 
 #ifndef WIN32
 #ifndef PASCAL
-#define PASCAL _pascal
+#define PASCAL __pascal
 #endif
 
 #ifndef FAR

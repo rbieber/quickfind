@@ -22,5 +22,12 @@ See the [DOCS](https://github.com/rbieber/quickfind/tree/master/DOC) directory f
 
 Cool thing is, I made $10 off of all the hours that I put into this.   Yes, $10.
 
+UPDATE
+======
+This now builds with the [OpenWatcom C Compiler](http://www.openwatcom.org/index.php/Downloads) for DOS.   The default
+makefile (Makefile) will build the DOS executable.
+
+After installing the Watcom C compiler and setting up your environment, just type <CODE>wmake</CODE>
+
 
 

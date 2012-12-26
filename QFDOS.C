@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdarg.h>
+#include <io.h>
 #include <conio.h>
 #include <ctype.h>
 
@@ -17,7 +18,7 @@ char  *szMessages[] =
          #ifdef WIN32
          "Quick File Finder for Windows NT version %s\n"
          #else
-         "Quick File Finder for MSDOS version %s\n"
+         "Quick File Finder for FreeDOS version %s\n"
          #endif
          #endif
 

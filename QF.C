@@ -1,7 +1,7 @@
 //*****************************************************************************
 //
 //          Name:   QF
-//       Version:   6.00
+//       Version:   8.00
 //
 //      Synopsis:   QF filespec [switches]
 //
@@ -68,7 +68,7 @@ void PASCAL ParseEnvironmentOptions(PSTR szEnvName);
 // Main Program
 //
 //*****************************************************************************
-int main(int argc, PPSTR argv)
+int main(int argc, const char **argv)
 {
    int   iDrive = 0,
          iNumDrives;
@@ -95,11 +95,12 @@ int main(int argc, PPSTR argv)
          DisplayVerificationFailure();
          exit(3);
       }
+ 
    #endif
    
    ParseEnvironmentOptions("QF_OPT");
 
-   if (!(parms(&argc, argv) - 1))
+   if (!(parms(&argc, argv + 1) - 1))
       usage(FALSE);
    else
       argv++;
@@ -269,7 +270,8 @@ int PASCAL parms(PINT piArgc, PPSTR ppArgv)
 
    while (*ppArg)
       {
-      if (**ppArg == '?' && !*(*ppArg + 1))
+  
+      if (**ppArg == '?' && !*(ppArg + 1))
          usage(FALSE);
 
       if (**ppArg == '/' || **ppArg == '-')
