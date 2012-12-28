@@ -27,7 +27,12 @@ UPDATE
 This now builds with the [OpenWatcom C Compiler](http://www.openwatcom.org/index.php/Downloads) for DOS.   The default
 makefile (Makefile) will build the DOS executable.
 
-After installing the Watcom C compiler and setting up your environment, just type <CODE>wmake</CODE>
+Building this software also requires the [A86 assembler](http://www.eji.com/a86/) by Eric Isaacson.  Install the software 
+in a directory that appears in your path.
+ 
+After installing the above and the the Watcom C compiler setting up your environment, just type <CODE>wmake</CODE>
+
+
 
 
 
