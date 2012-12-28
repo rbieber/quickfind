@@ -178,7 +178,7 @@ extern int floppies(void);      // Get number of floppy drives on system
 extern int isvalid(int);        // Check to see if drive is valid
 
 extern int PASCAL QFVerify(void);   // Crc-32 check on program title
-extern int PASCAL QFWriteVerifyInfo(PSTR);   // Crc-32 patch of .EXE file
+extern int PASCAL QFWriteVerifyInfo(const PSTR);   // Crc-32 patch of .EXE file
 extern void PASCAL DisplayVerificationFailure(void);  // show verification failure
                                                       // message
 
@@ -186,7 +186,7 @@ int PASCAL parms(PINT, PPSTR);  // Get command line options
 void PASCAL walkdirs(PSTR, BOOL, int (PASCAL *) (PSTR)); // Get directories to search
 int PASCAL filefind(PSTR);      // Match specified filespec
 
-void far handler(unsigned, unsigned, unsigned far *); // Hardware error handler
+int far handler(unsigned, unsigned, unsigned far *); // Hardware error handler
 
 #ifndef _WINDOWS
 extern int PASCAL assign(PSTR); // redirect output to a file
@@ -201,6 +201,6 @@ extern int PASCAL KeyInput(void);
 
 extern BOOL PASCAL MaybeDelete(PSTR, BOOL);
 PSTR PASCAL LongToString(ULONG, PSTR, int, WORD);
-extern void PASCAL splitfilespec(PSTR, PSTR, unsigned *);   //  Split file spec to name, drive
-extern void c_break(void);      // Control-Break interrupt handler
+extern void PASCAL splitfilespec(const PSTR, PSTR, unsigned *);   //  Split file spec to name, drive
+extern void c_break(int);      // Control-Break interrupt handler
 #endif

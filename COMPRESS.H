@@ -18,7 +18,7 @@
 #pragma pack(1)
 typedef struct tagARCHIVE {
    BYTE cArchiveMark;           // archive marker
-   char cHeaderVersion;         // header version
+   signed char cHeaderVersion;         // header version
    BYTE szName[13];             // file name
    ULONG ulSize;                // size of compressed file
    USHORT usDate;               // file date

@@ -131,7 +131,7 @@ int PASCAL QFVerify(void)
 // DESCRIPTION:
 //
 //******************************************************************************
-int PASCAL QFWriteVerifyInfo(char *szFileName)
+int PASCAL QFWriteVerifyInfo(const PSTR szFileName)
 {
    int fh;
 
@@ -153,7 +153,7 @@ int PASCAL QFWriteVerifyInfo(char *szFileName)
    if ((inbuf = (char *)malloc((size_t) lSize)) == NULL) {
       DisplayMessage(IDS_OUTOFMEMORY, __FILE__, __LINE__);
       close(fh);
-      c_break();
+      c_break(0);
    }
 
    bFound = FALSE;

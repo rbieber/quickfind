@@ -204,7 +204,7 @@ int PASCAL SearchDWC(PFILESTUFF pfs, PSTR szFileName, PINT pbPrinted)
          strcpy(pfs->szName, DWCEntry.szName);
          pfs->ulSize = DWCEntry.lSize;
 
-         tm = localtime(&DWCEntry.lFileTime);
+         tm = localtime((unsigned long *) &DWCEntry.lFileTime);
          filetime.date.iMonth = tm->tm_mon + 1;
          filetime.date.iDay = tm->tm_mday;
          filetime.date.iYear = tm->tm_year - 80;

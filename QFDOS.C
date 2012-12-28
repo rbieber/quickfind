@@ -76,7 +76,7 @@ BOOL PASCAL ShowNoPromptMessage(int iDrive, PSTR pszFileSpec)
    printf("\n");
 
    if (c != 'Y')
-      c_break();
+      c_break(0);
 
    return (TRUE);
 }
@@ -162,7 +162,7 @@ char PASCAL yesno(int iColumn, int iRow, char cChar)
 
       case VK_ESCAPE:
          printf("\n");
-         c_break();
+         c_break(0);
          break;
 
       case VK_RETURN:

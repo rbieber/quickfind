@@ -70,7 +70,8 @@ void PASCAL ParseEnvironmentOptions(PSTR szEnvName);
 //*****************************************************************************
 int main(int argc, const char **argv)
 {
-   int iDrive = 0, iNumDrives;
+   int iDrive = 0;
+   unsigned int iNumDrives;
 
    PSTR pchTemp = NULL;
 
@@ -87,7 +88,7 @@ int main(int argc, const char **argv)
       break;
 
    case 1:
-      QFWriteVerifyInfo(*argv);
+      QFWriteVerifyInfo((const PSTR) (*argv));
       break;
 
    case 3:
@@ -99,7 +100,7 @@ int main(int argc, const char **argv)
 
    ParseEnvironmentOptions("QF_OPT");
 
-   if (!(parms(&argc, argv + 1) - 1))
+   if (!(parms(&argc, (const PPSTR) argv + 1) - 1))
       usage(TRUE);
    else
       argv++;
@@ -116,8 +117,8 @@ int main(int argc, const char **argv)
    _dos_getdrive(&usFirstDisk);
    getcwd(szOriginalPath, sizeof(szOriginalPath));
 
-   _dos_setdrive(usFirstDisk, &iNumDrives);
-   splitfilespec(strupr(*argv), szFileName, &iDrive);
+   _dos_setdrive(usFirstDisk, (unsigned int *) &iNumDrives);
+   splitfilespec((const char *) strupr((char *) *argv), szFileName, (unsigned int *) &iDrive);
 
    if (!isvalid(iDrive) || bError)  // invalid drive specified.
    {
@@ -128,7 +129,7 @@ int main(int argc, const char **argv)
 
    if ((fSwitches & DELETEFILE) && (fSwitches & NOPROMPT))
       if (!ShowNoPromptMessage(iDrive, szFileName))
-         c_break();
+         c_break(0);
 
    if (fSwitches & ALLDRIVES) {
       for (iDrive = 1; iDrive <= floppies(); iDrive++) {
@@ -532,7 +533,7 @@ void PASCAL walkdirs(PSTR szStartDir, BOOL bCurrent, int (PASCAL * fcn) (PSTR))
  *   Description:   parses szFileName and returns the drive number and filename
  *
  *****************************************************************************/
-void PASCAL splitfilespec(PSTR szFileSpec, PSTR szFile, unsigned *piDrive)
+void PASCAL splitfilespec(const PSTR szFileSpec, PSTR szFile, unsigned *piDrive)
 {
    char szDrive[_MAX_DRIVE],
        szDir[_MAX_DIR], szFName[_MAX_FNAME], szExt[_MAX_EXT];
@@ -569,9 +570,9 @@ void PASCAL splitfilespec(PSTR szFileSpec, PSTR szFile, unsigned *piDrive)
  *   Description:   Control Break interrupt handler
  *
  *****************************************************************************/
-void c_break(void)
+void c_break(int c)
 {
-   int iTemp;
+   unsigned int iTemp;
 
 #ifndef _WINDOWS
    if (fSwitches & LOG)
@@ -597,7 +598,7 @@ void c_break(void)
  *
  *****************************************************************************/
 #if !defined(_WINDOWS) && !defined(__OS2__)
-void far handler(unsigned errval, unsigned ax, unsigned far * devhdr)
+int far handler(unsigned int errval, unsigned int ax, unsigned __far * devhdr)
 {
    BYTE cDrive = ((BYTE) ((unsigned)errval & 0xFF)) + (BYTE) 'A';
 
@@ -610,6 +611,8 @@ void far handler(unsigned errval, unsigned ax, unsigned far * devhdr)
 #if !defined(__OS2__) && !defined(WIN32)
    _hardretn(-1);
 #endif
+
+   return(_HARDERR_IGNORE);
 }
 #endif
 void PASCAL ParseEnvironmentOptions(PSTR szEnvName)
