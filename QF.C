@@ -118,7 +118,7 @@ int main(int argc, const char **argv)
    getcwd(szOriginalPath, sizeof(szOriginalPath));
 
    _dos_setdrive(usFirstDisk, (unsigned int *) &iNumDrives);
-   splitfilespec((const char *) strupr((char *) *argv), szFileName, (unsigned int *) &iDrive);
+   splitfilespec((char *) strupr((char *) *argv), szFileName, (unsigned int *) &iDrive);
 
    if (!isvalid(iDrive) || bError)  // invalid drive specified.
    {
