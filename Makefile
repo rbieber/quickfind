@@ -1,6 +1,6 @@
 CC=wcc
 #CFLAGS=-ecc -bc -d3 -3 -hw -ml
-CFLAGS=-zq -ecc -bc -3 -hw -ml -d_DOS
+CFLAGS=-zq -ecc -bc -ox -5 -ml -d_DOS
 LINKER=wlink
 #LFLAGS = option quiet,stack=8192 debug watcom 
 LFLAGS = option quiet,stack=8192  
@@ -9,10 +9,6 @@ OBJS=qf.obj compress.obj qfvfy.obj qfllf.obj qfprint.obj qfdos.obj wildcard.obj
 
 all: qf.exe
 
-clean:
-	del *.obj
-	del *.exe
-	
 .c.obj: .autodepend
         $(CC) $CFLAGS $<
 
@@ -35,4 +31,8 @@ qfllf.obj: qfllf.8
 
 qf.exe: $(OBJS)
         $(LINKER) $(LFLAGS) name $@ file *.obj
+
+clean: .symbolic
+   del *.obj
+   del *.exe
 
