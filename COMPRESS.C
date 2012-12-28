@@ -500,8 +500,7 @@ int PASCAL SearchLZH(PFILESTUFF pfs, PSTR szFileName, PINT pbPrinted)
  *       Returns:   TRUE if it was found.  Otherwise, FALSE
  *
  *****************************************************************************/
-int PASCAL FindEOCD(hZIPFile)
-int hZIPFile;
+int PASCAL FindEOCD(int hZIPFile)
 {
    char *pchBuffer, *pchBufPtr;
 
