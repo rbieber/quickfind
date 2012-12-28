@@ -7,16 +7,16 @@
 // Copyright (C) 1989-91 by Quick Solutions, Inc;  All rights reserved.
 //
 //*****************************************************************************
-typedef int             BOOL;
-typedef BOOL            *PBOOL;
-typedef long            LONG;
-typedef long            *PLONG;
-typedef int             *PINT;
+typedef int BOOL;
+typedef BOOL *PBOOL;
+typedef long LONG;
+typedef long *PLONG;
+typedef int *PINT;
 
-typedef int             HFILE;
-typedef unsigned short  USHORT;
-typedef unsigned long   ULONG;
-typedef unsigned char   BYTE;
+typedef int HFILE;
+typedef unsigned short USHORT;
+typedef unsigned long ULONG;
+typedef unsigned char BYTE;
 
 #ifndef FALSE
 #define FALSE  0
@@ -38,10 +38,8 @@ typedef unsigned char   BYTE;
 #define PASCAL
 #define FAR
 #define NEAR
-#endif               // #ifndef WIN32
+#endif                          // #ifndef WIN32
 
 #ifndef TRUE
 #define TRUE   !FALSE
 #endif
-
-

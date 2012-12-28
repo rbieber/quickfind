@@ -26,11 +26,11 @@
 #include "qf.h"
 #include "qfdos.h"
 
-char *months[13] =         // month names
-   {
+char *months[13] =              // month names
+{
    "   ", "Jan", "Feb", "Mar", "Apr", "May", "Jun",
    "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
-   };
+};
 
 extern ULONG ulSubTotal;
 
@@ -52,18 +52,14 @@ extern ULONG ulSubTotal;
 //******************************************************************************
 void PASCAL ShowFileInfo(PFILESTUFF pfs)
 {
-   int   iHours,
-         iMinutes,
-         iMonth,
-         iDay,
-         iYear;
+   int iHours, iMinutes, iMonth, iDay, iYear;
 
-   char  szLine[MAX_LINE];
-   PSTR  pch;
+   char szLine[MAX_LINE];
+   PSTR pch;
 
    DOSDATETIME filetime;
 
-   char  cAM = 'a';
+   char cAM = 'a';
 
    memset(szLine, 0, sizeof(szLine));
 
@@ -71,32 +67,28 @@ void PASCAL ShowFileInfo(PFILESTUFF pfs)
    // get the hell out of here, cause we don't want to print it.
    if ((pfs->byType & FS_MAINARCHIVE) && !*pfs->szArchiveName)
       return;
-   
+
    if ((pfs->byType & FS_ARCHIVE) && !*pfs->szName)
       return;
-      
+
    if (!(pfs->byType & FS_MAINARCHIVE))
       ulSubTotal += pfs->ulSize;
 
-   if (!(fSwitches & NOFILEINFO))
-      {
+   if (!(fSwitches & NOFILEINFO)) {
       if (pfs->byType & FS_DIRECTORY)
-         sprintf(szLine, "   %-16s          <DIR>    ",pfs->szName);
-      else
-         {
+         sprintf(szLine, "   %-16s          <DIR>    ", pfs->szName);
+      else {
          if (pfs->byType & FS_MAINARCHIVE)
             sprintf(szLine, "   %-16s ", strupr(pfs->szArchiveName));
+         else if (pfs->byType & FS_ARCHIVE)
+            sprintf(szLine, "     *%-13s ", strlwr(pfs->szName));
          else
-            if (pfs->byType & FS_ARCHIVE)
-               sprintf(szLine, "     *%-13s ", strlwr(pfs->szName));
-            else
-               sprintf(szLine, "   %-16s ", strlwr(pfs->szName));
+            sprintf(szLine, "   %-16s ", strlwr(pfs->szName));
 
-         LongToString(pfs->ulSize, szLine + strlen(szLine), 11, 
-                      LTS_PADLEFT);
+         LongToString(pfs->ulSize, szLine + strlen(szLine), 11, LTS_PADLEFT);
 
          strcat(szLine, " bytes ");
-         }
+      }
 
       filetime.iValue = pfs->usTime;
 
@@ -109,11 +101,11 @@ void PASCAL ShowFileInfo(PFILESTUFF pfs)
       iDay = filetime.date.iDay;
       iYear = filetime.date.iYear + 1980;
 
-      if (iHours >= 12)     // adjust to 12 hour format
-         {
+      if (iHours >= 12)         // adjust to 12 hour format
+      {
          iHours -= 12;
          cAM = 'p';
-         }
+      }
 
       if (!iHours)
          iHours = 12;
@@ -121,25 +113,20 @@ void PASCAL ShowFileInfo(PFILESTUFF pfs)
       pch = szLine + strlen(szLine);
 
       if (iMonth && iDay && iYear)
-         sprintf(pch, (char *) " %2d:%2.2d %cm  %3s %2d %4.4d ",
-                 iHours, iMinutes, cAM, (char *) months[iMonth], iDay, iYear);
+         sprintf(pch, (char *)" %2d:%2.2d %cm  %3s %2d %4.4d ",
+                 iHours, iMinutes, cAM, (char *)months[iMonth], iDay, iYear);
       else
-         sprintf(pch, (char *) "%-23.23c", (char) ' ');
-      }
-   else
-      {
+         sprintf(pch, (char *)"%-23.23c", (char)' ');
+   } else {
       if (pfs->byType & FS_DIRECTORY)
-         sprintf(szLine, "   %-16s",pfs->szName);
+         sprintf(szLine, "   %-16s", pfs->szName);
+      else if (pfs->byType & FS_MAINARCHIVE)
+         sprintf(szLine, "   %-16s ", strupr(pfs->szArchiveName));
+      else if (pfs->byType & FS_ARCHIVE)
+         sprintf(szLine, "     *%-13s ", strlwr(pfs->szName));
       else
-         if (pfs->byType & FS_MAINARCHIVE)
-            sprintf(szLine, "   %-16s ", strupr(pfs->szArchiveName));
-         else
-            if (pfs->byType & FS_ARCHIVE)
-               sprintf(szLine, "     *%-13s ", strlwr(pfs->szName));
-            else
-               sprintf(szLine, "   %-16s ", strlwr(pfs->szName));
-      }
-
+         sprintf(szLine, "   %-16s ", strlwr(pfs->szName));
+   }
 
    printf(szLine);
 
@@ -150,10 +137,8 @@ void PASCAL ShowFileInfo(PFILESTUFF pfs)
    usLineCount++;
 
    if (fSwitches & PAUSE)
-      if (usLineCount >= 24)
-         {
-         int   col = wherex(),
-               row = wherey();         // current cursor position
+      if (usLineCount >= 24) {
+         int col = wherex(), row = wherey(); // current cursor position
 
          printf("Program paused; press a key to continue ... (ESC to quit).");
          fflush(stdout);
@@ -164,7 +149,7 @@ void PASCAL ShowFileInfo(PFILESTUFF pfs)
          clreol();
 
          usLineCount = 0;
-         }
+      }
 
    if (pfs->byType & (FS_DIRECTORY | FS_MAINARCHIVE))
       pfs->byType &= ~(FS_DIRECTORY | FS_MAINARCHIVE);
@@ -201,62 +186,55 @@ void PASCAL ShowFileInfo(PFILESTUFF pfs)
 //******************************************************************************
 PSTR PASCAL LongToString(ULONG lValue, PSTR szDest, int iMaxLen, WORD wFlags)
 {
-   char  szStack[50];
+   char szStack[50];
 
-   PSTR  pch = szDest;
-   PSTR  pchStack = szStack;
+   PSTR pch = szDest;
+   PSTR pchStack = szStack;
 
-   int   iNumDigits = 0,
-         iIndex     = 0,
-         iLength;
+   int iNumDigits = 0, iIndex = 0, iLength;
 
-   BOOL  bTempBuf = FALSE;
+   BOOL bTempBuf = FALSE;
 
-   unsigned long  lTemp = lValue;
-   unsigned long  lResult = 0L;
+   unsigned long lTemp = lValue;
+   unsigned long lResult = 0L;
 
-   if (szDest == (char *) NULL)
-      if ((pch = szDest = (char *) malloc(iMaxLen + 1)) == NULL)
-         return(NULL);
+   if (szDest == (char *)NULL)
+      if ((pch = szDest = (char *)malloc(iMaxLen + 1)) == NULL)
+         return (NULL);
       else
          bTempBuf = TRUE;
 
    memset(szStack, 0, sizeof(szStack));
    memset(szDest, 0, iMaxLen);
 
-   do
-      {
-      lResult = (lTemp % 10L) + (unsigned long) '0';
-      
-      *pchStack = (char) lResult;
+   do {
+      lResult = (lTemp % 10L) + (unsigned long)'0';
+
+      *pchStack = (char)lResult;
       iNumDigits++;
       pchStack++;
-      }
+   }
    while ((lTemp /= 10));
 
    // now format the number ...
 
-   while (iNumDigits)
-      {
-      if (!(iNumDigits % 3) && (pch != szDest))
-         {
+   while (iNumDigits) {
+      if (!(iNumDigits % 3) && (pch != szDest)) {
          *pch = ',';
          pch++;
-         }
+      }
 
       *pch = *(--pchStack);
       iNumDigits--;
       pch++;
-      }
+   }
 
    *(szDest + min((WORD) (pch - szDest), (WORD) iMaxLen - 1)) = 0;
 
    // Do any padding that the caller specified.
 
-   if (wFlags)
-      {
-      if ((pch = (char *) malloc(iMaxLen + 1)) != NULL)
-         {
+   if (wFlags) {
+      if ((pch = (char *)malloc(iMaxLen + 1)) != NULL) {
          iLength = strlen(szDest);
 
          memcpy(pch, szDest, iLength);
@@ -266,20 +244,15 @@ PSTR PASCAL LongToString(ULONG lValue, PSTR szDest, int iMaxLen, WORD wFlags)
 
          if (wFlags & LTS_PADLEFT)
             memcpy(szDest + (iMaxLen - iLength), pch, iLength);
-         else
-            if (wFlags & LTS_PADRIGHT)
-               memcpy(szDest, pch, iLength);
+         else if (wFlags & LTS_PADRIGHT)
+            memcpy(szDest, pch, iLength);
 
          free(pch);
-         }
-      else
-         if (bTempBuf)
-            {
-            free(szDest);
-            szDest = NULL;
-            }
+      } else if (bTempBuf) {
+         free(szDest);
+         szDest = NULL;
       }
+   }
 
-   return(szDest);
+   return (szDest);
 }
-

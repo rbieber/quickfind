@@ -13,7 +13,7 @@
 
 #define VERSION "8.00"
 
-#ifndef _MAX_PATH                   // for use with Microsoft C 6.00
+#ifndef _MAX_PATH               // for use with Microsoft C 6.00
 #include <stdlib.h>
 #endif
 
@@ -34,24 +34,24 @@
 #include <time.h>
 #include <io.h>
 
-struct find_t 
-   {
-   unsigned     attrib;
-   time_t       time_create;    /* -1 for FAT file systems */
-   time_t       time_access;    /* -1 for FAT file systems */
-   time_t       time_write;
+struct find_t {
+   unsigned attrib;
+   time_t time_create;          /* -1 for FAT file systems */
+   time_t time_access;          /* -1 for FAT file systems */
+   time_t time_write;
    _fsize_t size;
-   char    name[_MAX_PATH];
-   long     search_handle;
-   };
+   char name[_MAX_PATH];
+   long search_handle;
+};
 
 #endif
 
-#if defined (__OS2__) || defined(WIN32) || (_MSC_VER <= 600) 
+#if defined (__OS2__) || defined(WIN32) || (_MSC_VER <= 600)
 #define _find_t find_t
 
 #if !defined(_DOS)
-unsigned _dos_findfirst(const char *pszPathName, unsigned attrib, struct _find_t *pfind_t);
+unsigned _dos_findfirst(const char *pszPathName, unsigned attrib,
+                        struct _find_t *pfind_t);
 unsigned _dos_findnext(struct _find_t *pfind_t);
 void _dos_getdrive(unsigned *puiDrive);
 void _dos_setdrive(unsigned usDrive, unsigned *puNumDrives);
@@ -60,13 +60,13 @@ void _dos_setdrive(unsigned usDrive, unsigned *puNumDrives);
 #endif
 
 #ifndef _WINDOWS
-typedef char            *PSTR;
-typedef char            **PPSTR;
+typedef char *PSTR;
+typedef char **PPSTR;
 
 #ifndef WIN32
-typedef unsigned int    WORD;
-typedef unsigned int    *PWORD;
-typedef unsigned long   DWORD;
+typedef unsigned int WORD;
+typedef unsigned int *PWORD;
+typedef unsigned long DWORD;
 
 #endif
 #endif
@@ -75,11 +75,11 @@ typedef unsigned long   DWORD;
 #define lmin(v1, v2) ((DWORD) v1 < (DWORD) v2 ? (DWORD) v1 : (DWORD) v2)
 #endif
 
-extern USHORT  usLineCount,         // line counter for pause switch
-               fSwitches;           // global variable to hold command line
+extern USHORT usLineCount,      // line counter for pause switch
+ fSwitches;                     // global variable to hold command line
                                     // flags
 
-extern unsigned usFirstDisk;        // drive number at start of program
+extern unsigned usFirstDisk;    // drive number at start of program
 
 #include <conio.h>
 
@@ -119,58 +119,54 @@ extern unsigned usFirstDisk;        // drive number at start of program
 #define LTS_PADLEFT        0x0080
 #define LTS_PADRIGHT       0x0060
 
-typedef struct tagFILESTUFF   // structure used by ShowFileInfo()
-   {
-   BYTE     szName[_MAX_PATH];
-   ULONG    ulSize;
-   USHORT   usDate;
-   USHORT   usTime;
-   BYTE     byType;
-   BYTE     szArchiveName[13];
-   }
-FILESTUFF;
+typedef struct tagFILESTUFF     // structure used by ShowFileInfo()
+{
+   BYTE szName[_MAX_PATH];
+   ULONG ulSize;
+   USHORT usDate;
+   USHORT usTime;
+   BYTE byType;
+   BYTE szArchiveName[13];
+} FILESTUFF;
 
-typedef FILESTUFF FAR   *LPFILESTUFF;
-typedef FILESTUFF NEAR  *NPFILESTUFF;
-typedef FILESTUFF       *PFILESTUFF;
+typedef FILESTUFF FAR *LPFILESTUFF;
+typedef FILESTUFF NEAR *NPFILESTUFF;
+typedef FILESTUFF *PFILESTUFF;
 
-typedef struct  tagDOSDATE    //  bit field definitions for DOS date
-   {
+typedef struct tagDOSDATE       //  bit field definitions for DOS date
+{
    unsigned iDay:5;
    unsigned iMonth:4;
    unsigned iYear:7;
-   }
-DOSDATE;
+} DOSDATE;
 
-typedef DOSDATE      *PDOSDATE;
+typedef DOSDATE *PDOSDATE;
 typedef DOSDATE NEAR *NPDOSDATE;
-typedef DOSDATE FAR  *LPDOSDATE;
+typedef DOSDATE FAR *LPDOSDATE;
 
-typedef struct tagDOSTIME     //  bit field definitions for DOS time
-   {
+typedef struct tagDOSTIME       //  bit field definitions for DOS time
+{
    unsigned iTwoSecs:5;
    unsigned iMinutes:6;
    unsigned iHours:5;
-   }
-DOSTIME;
+} DOSTIME;
 
-typedef DOSTIME      *PDOSTIME;
+typedef DOSTIME *PDOSTIME;
 typedef DOSTIME NEAR *NPDOSTIME;
-typedef DOSTIME FAR  *LPDOSTIME;
+typedef DOSTIME FAR *LPDOSTIME;
 
-typedef union tagDOSDATETIME  //  union signifying DOS date/time
-   {
-   DOSDATE  date;
-   DOSTIME  time;
+typedef union tagDOSDATETIME    //  union signifying DOS date/time
+{
+   DOSDATE date;
+   DOSTIME time;
    unsigned iValue;
-   }
-DOSDATETIME;
+} DOSDATETIME;
 
-typedef DOSDATETIME      *PDOSDATETIME;
+typedef DOSDATETIME *PDOSDATETIME;
 typedef DOSDATETIME NEAR *NPDOSDATETIME;
-typedef DOSDATETIME FAR  *LPDOSDATETIME;
+typedef DOSDATETIME FAR *LPDOSDATETIME;
 
-extern FILESTUFF  fs;
+extern FILESTUFF fs;
 
 //*****************************************************************************
 //
@@ -178,33 +174,33 @@ extern FILESTUFF  fs;
 //
 //***************************************************************************
 extern void PASCAL ShowFileInfo(PFILESTUFF); // Display g_files structure
-extern int  floppies(void);         // Get number of floppy drives on system
-extern int  isvalid(int);           // Check to see if drive is valid
+extern int floppies(void);      // Get number of floppy drives on system
+extern int isvalid(int);        // Check to see if drive is valid
 
 extern int PASCAL QFVerify(void);   // Crc-32 check on program title
-extern int PASCAL QFWriteVerifyInfo(PSTR);  // Crc-32 patch of .EXE file
+extern int PASCAL QFWriteVerifyInfo(PSTR);   // Crc-32 patch of .EXE file
 extern void PASCAL DisplayVerificationFailure(void);  // show verification failure
                                                       // message
 
-int   PASCAL parms(PINT, PPSTR);                 // Get command line options
-void  PASCAL walkdirs(PSTR, BOOL, int (PASCAL *)(PSTR));   // Get directories to search
-int   PASCAL filefind(PSTR);                         // Match specified filespec
+int PASCAL parms(PINT, PPSTR);  // Get command line options
+void PASCAL walkdirs(PSTR, BOOL, int (PASCAL *) (PSTR)); // Get directories to search
+int PASCAL filefind(PSTR);      // Match specified filespec
 
 void far handler(unsigned, unsigned, unsigned far *); // Hardware error handler
 
 #ifndef _WINDOWS
-extern int PASCAL assign(PSTR);     // redirect output to a file
-extern int PASCAL unassign(void);         // 'un-redirection' routine
+extern int PASCAL assign(PSTR); // redirect output to a file
+extern int PASCAL unassign(void);   // 'un-redirection' routine
 extern int wherey(void);
 extern int wherex(void);
 extern void gotoxy(int, int);
 extern void clreol(void);
 extern void PASCAL KeyFlush(void);
-extern int  PASCAL KeyInput(void);
+extern int PASCAL KeyInput(void);
 #endif
 
 extern BOOL PASCAL MaybeDelete(PSTR, BOOL);
 PSTR PASCAL LongToString(ULONG, PSTR, int, WORD);
-extern void PASCAL splitfilespec(PSTR, PSTR, unsigned *); //  Split file spec to name, drive
-extern void c_break(void);                      // Control-Break interrupt handler
+extern void PASCAL splitfilespec(PSTR, PSTR, unsigned *);   //  Split file spec to name, drive
+extern void c_break(void);      // Control-Break interrupt handler
 #endif

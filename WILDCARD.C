@@ -48,10 +48,8 @@
 //******************************************************************************
 void PASCAL ParseName(PFILENAME pnbName, PSTR szPattern)
 {
-   char  szDrive[_MAX_DRIVE],
-         szDir[_MAX_DIR],
-         szName[_MAX_FNAME],
-         szExt[_MAX_EXT];
+   char szDrive[_MAX_DRIVE],
+       szDir[_MAX_DIR], szName[_MAX_FNAME], szExt[_MAX_EXT];
 
    _splitpath(szPattern, szDrive, szDir, szName, szExt);
 
@@ -83,28 +81,27 @@ void PASCAL ParseName(PFILENAME pnbName, PSTR szPattern)
 //******************************************************************************
 int PASCAL MatchWildcards(PSTR szName1, PSTR szName2)
 {
-   char  c;
-   int   iIndex = -1;
+   char c;
+   int iIndex = -1;
 
-   while ((c = szName1[++iIndex]) != (char) NULL ||
-          szName2[iIndex] != (char) NULL)
-      {
-      switch(c)
-         {
-         case ANY:
-            break;
+   while ((c = szName1[++iIndex]) != (char)NULL ||
+          szName2[iIndex] != (char)NULL) {
+      switch (c) {
+      case ANY:
+         break;
 
-         case REST:
-            return(TRUE);
+      case REST:
+         return (TRUE);
 
-         default:
-            if (toupper(szName2[iIndex]) != toupper(szName1[iIndex]))
-               return(FALSE);
-         }
+      default:
+         if (toupper(szName2[iIndex]) != toupper(szName1[iIndex]))
+            return (FALSE);
       }
+   }
 
-   return(1);
+   return (1);
 }
+
 /******************************************************************************
  *
  *          Name:   Match
@@ -119,20 +116,17 @@ int PASCAL MatchWildcards(PSTR szName1, PSTR szName2)
  ****************************************************************************/
 int PASCAL Match(PSTR szPattern, PSTR szMatchTo)
 {
-   FILENAME fnName1,
-            fnName2;
+   FILENAME fnName1, fnName2;
 
-   memset((char *) &fnName1, 0, sizeof(FILENAME));
-   memset((char *) &fnName2, 0, sizeof(FILENAME));
+   memset((char *)&fnName1, 0, sizeof(FILENAME));
+   memset((char *)&fnName2, 0, sizeof(FILENAME));
 
    ParseName(&fnName1, szPattern);
    ParseName(&fnName2, szMatchTo);
 
    if (MatchWildcards(fnName1.szFName, fnName2.szFName) &&
        MatchWildcards(fnName1.szExt, fnName2.szExt))
-      return(TRUE);
+      return (TRUE);
    else
-      return(FALSE);
+      return (FALSE);
 }
-
-

@@ -26,26 +26,23 @@
 
 #define  BUFSZ    8192L
 
-typedef struct 
-   {
+typedef struct {
    char szExtension[4];
    LPFNARCHIVESEARCH lpfn;
-   }
-JUMPTABLEENTRY;
+} JUMPTABLEENTRY;
 
-JUMPTABLEENTRY archiveSearch[] =
-   {
-   { "ARC", SearchARC },
-   { "PAK", SearchARC },
-   { "ZIP", SearchZIP },
-   { "ZOO", SearchZOO },
-   { "DWC", SearchDWC },
-   { "LZH", SearchLZH },
-   { "LZS", SearchLZH }
-   };
-   
+JUMPTABLEENTRY archiveSearch[] = {
+   {"ARC", SearchARC},
+   {"PAK", SearchARC},
+   {"ZIP", SearchZIP},
+   {"ZOO", SearchZOO},
+   {"DWC", SearchDWC},
+   {"LZH", SearchLZH},
+   {"LZS", SearchLZH}
+};
+
 PSTR PASCAL GetFileName(PSTR);
-int  PASCAL FindEOCD(int);
+int PASCAL FindEOCD(int);
 
 /******************************************************************************
  *
@@ -62,78 +59,70 @@ int  PASCAL FindEOCD(int);
  *****************************************************************************/
 int PASCAL SearchARC(PFILESTUFF pfs, PSTR szFileName, PINT pbPrinted)
 {
-   int   fh,
-         iFound = 0,
-         nBytesRead;
+   int fh, iFound = 0, nBytesRead;
 
-   PSTR  pch;
+   PSTR pch;
 
    ARCHIVE arcEntry;
 
    // open archive file.
-   if ((fh = open(pfs->szArchiveName, O_RDONLY | O_BINARY)) < 0)
-      {
+   if ((fh = open(pfs->szArchiveName, O_RDONLY | O_BINARY)) < 0) {
       DisplayMessage(IDS_CANTOPENFILE, pfs->szArchiveName);
-      return(0);
+      return (0);
+   }
+
+   while ((nBytesRead = read(fh, (char *)&arcEntry, sizeof(ARCHIVE))) > 0) {
+      if (arcEntry.cArchiveMark != ARCMARK)  // check archive marker
+      {
+         DisplayMessage(IDS_ARCHIVECORRUPT, pfs->szArchiveName);
+         break;
       }
 
-   while ((nBytesRead = read(fh, (char *) &arcEntry, sizeof(ARCHIVE))) > 0)
+      if (arcEntry.cHeaderVersion < 0) // check header version.
       {
-      if (arcEntry.cArchiveMark != ARCMARK) // check archive marker
-         {
          DisplayMessage(IDS_ARCHIVECORRUPT, pfs->szArchiveName);
          break;
-         }
+      }
 
-      if (arcEntry.cHeaderVersion < 0)    // check header version.
-         {
-         DisplayMessage(IDS_ARCHIVECORRUPT, pfs->szArchiveName);
-         break;
-         }
-
-      if (!arcEntry.cHeaderVersion)       // end of archive
+      if (!arcEntry.cHeaderVersion) // end of archive
          break;
 
       if (arcEntry.cHeaderVersion == 1)   // old style archive, header is shorter
-         {
+      {
          lseek(fh, tell(fh) - (ULONG) sizeof(LONG), SEEK_SET);
          arcEntry.cHeaderVersion = 2;
          arcEntry.ulSize = arcEntry.ulLength;
-         }
+      }
 
-      if (arcEntry.cHeaderVersion > 0)
-         {
-         if (Match(szFileName, arcEntry.szName))
-            {
-            if (++iFound == 1)
-               {
-               if (!(*pbPrinted))
-                  {
+      if (arcEntry.cHeaderVersion > 0) {
+         if (Match(szFileName, arcEntry.szName)) {
+            if (++iFound == 1) {
+               if (!(*pbPrinted)) {
                   pch = getcwd(NULL, MAXPATH);
                   DisplayMessage(IDS_DIRECTORYLINE, pch);
                   free(pch);
                   usLineCount += 2;
                   *pbPrinted = 1;
-                  }
+               }
 
                if (!(pfs->byType & FS_DIRECTORY))
                   ShowFileInfo(pfs);
-               }
+            }
 
             strcpy(pfs->szName, arcEntry.szName);
-            pfs->byType |= FS_ARCHIVE;             // It IS an archive
+            pfs->byType |= FS_ARCHIVE; // It IS an archive
             pfs->ulSize = arcEntry.ulLength;
             pfs->usDate = arcEntry.usDate;
             pfs->usTime = arcEntry.usTime;
             ShowFileInfo(pfs);
-            }
          }
-
-      lseek(fh, (long) arcEntry.ulSize, SEEK_CUR);
       }
 
-    close(fh);
-    return(iFound);
+      lseek(fh, (long)arcEntry.ulSize, SEEK_CUR);
+   }
+
+   close(fh);
+   return (iFound);
 }
 
 /******************************************************************************
@@ -151,75 +140,67 @@ int PASCAL SearchARC(PFILESTUFF pfs, PSTR szFileName, PINT pbPrinted)
  *****************************************************************************/
 int PASCAL SearchDWC(PFILESTUFF pfs, PSTR szFileName, PINT pbPrinted)
 {
-   int   hFile,
-         nBytesRead,
-         iCount,
-         iFound = 0;
+   int hFile, nBytesRead, iCount, iFound = 0;
 
-   char  *pch;
+   char *pch;
 
-   LONG  lOffset;
+   LONG lOffset;
 
-   DWCENTRY    DWCEntry;
-   DWCARCHIVE  DWCArchive;
+   DWCENTRY DWCEntry;
+   DWCARCHIVE DWCArchive;
 
    DOSDATETIME filetime;
 
-   struct tm  *tm;
+   struct tm *tm;
 
    // open DWCArchive file ...
-   if ((hFile = open(pfs->szArchiveName, O_RDONLY | O_BINARY)) < 0)
-      {
+   if ((hFile = open(pfs->szArchiveName, O_RDONLY | O_BINARY)) < 0) {
       DisplayMessage(IDS_CANTOPENFILE, pfs->szArchiveName);
-      return(0);
-      }
+      return (0);
+   }
 
    lseek(hFile, (ULONG) (filelength(hFile) - (LONG) sizeof(DWCARCHIVE)),
          SEEK_SET);
-   read(hFile, (char *) &DWCArchive, sizeof(DWCARCHIVE));
+   read(hFile, (char *)&DWCArchive, sizeof(DWCARCHIVE));
 
-   if (strnicmp(DWCArchive.szID, "DWC", 3) != 0)       //  not a .DWC file
-      {
+   if (strnicmp(DWCArchive.szID, "DWC", 3) != 0)   //  not a .DWC file
+   {
       DisplayMessage(IDS_ARCHIVECORRUPT, pfs->szArchiveName);
       close(hFile);
-      return(iFound);
-      }
-
+      return (iFound);
+   }
    // calculate offset to DWC directory entries
    // and position the file pointer there.
    lOffset = DWCArchive.lSize + (DWCArchive.lEntries * DWCArchive.lEntrySize);
 
-   lseek(hFile, (long) filelength(hFile) - lOffset, SEEK_SET);
+   lseek(hFile, (long)filelength(hFile) - lOffset, SEEK_SET);
 
    iCount = 0;
 
-   while ((unsigned) iCount++ < (unsigned) DWCArchive.lEntries)
-      {
+   while ((unsigned)iCount++ < (unsigned)DWCArchive.lEntries) {
       //  read DWC directory DWCEntry
 
-      nBytesRead = read(hFile, (char *) &DWCEntry, sizeof(DWCENTRY));
+      nBytesRead = read(hFile, (char *)&DWCEntry, sizeof(DWCENTRY));
 
       if (nBytesRead < 1)
          break;
 
-      if (Match(szFileName, DWCEntry.szName))    //  compare szName with filespec
-         {
-         if (++iFound == 1)
-            {
-            if (!(*pbPrinted))
-               {
+      if (Match(szFileName, DWCEntry.szName))   //  compare szName with filespec
+      {
+         if (++iFound == 1) {
+            if (!(*pbPrinted)) {
                pch = getcwd(NULL, MAXPATH);
                DisplayMessage(IDS_DIRECTORYLINE, pch);
                free(pch);
                usLineCount += 2;
                *pbPrinted = 1;
-               }
+            }
 
             if (!(pfs->byType & FS_DIRECTORY))
                ShowFileInfo(pfs);
-            }
+         }
 
-         pfs->byType |= FS_ARCHIVE;             // it IS an archive
+         pfs->byType |= FS_ARCHIVE; // it IS an archive
          strcpy(pfs->szName, DWCEntry.szName);
          pfs->ulSize = DWCEntry.lSize;
 
@@ -234,11 +215,11 @@ int PASCAL SearchDWC(PFILESTUFF pfs, PSTR szFileName, PINT pbPrinted)
          pfs->usTime = filetime.iValue;
 
          ShowFileInfo(pfs);
-         }
       }
+   }
 
-    close(hFile);
-    return(iFound);
+   close(hFile);
+   return (iFound);
 }
 
 /******************************************************************************
@@ -257,86 +238,74 @@ int PASCAL SearchDWC(PFILESTUFF pfs, PSTR szFileName, PINT pbPrinted)
  *****************************************************************************/
 int PASCAL SearchZIP(PFILESTUFF pfs, PSTR szFileName, PINT pbPrinted)
 {
-   char  *pch,
-         szEntryName[MAXPATH];
+   char *pch, szEntryName[MAXPATH];
 
-   int   hFile,
-         iFound = 0,
-         iIndex;
+   int hFile, iFound = 0, iIndex;
 
-   ZIPENTRY    cd;
-   ZIPARCHIVE  eocd;
+   ZIPENTRY cd;
+   ZIPARCHIVE eocd;
 
    // open ZIP file ...
 
-   if ( (hFile = open(pfs->szArchiveName, O_RDONLY | O_BINARY)) < 0)
-      {
+   if ((hFile = open(pfs->szArchiveName, O_RDONLY | O_BINARY)) < 0) {
       DisplayMessage(IDS_CANTOPENFILE, pfs->szArchiveName);
-      return(0);
-      }
+      return (0);
+   }
 
-   if (!FindEOCD(hFile))              // find end of central directory header
-      {
+   if (!FindEOCD(hFile))        // find end of central directory header
+   {
       DisplayMessage(IDS_ARCHIVECORRUPT, pfs->szArchiveName);
       close(hFile);
-      return(0);
-      }
+      return (0);
+   }
 
-   read(hFile, (char *) &eocd, sizeof(ZIPARCHIVE));
+   read(hFile, (char *)&eocd, sizeof(ZIPARCHIVE));
 
-   if (eocd.sig == END_SIG)
-      {
+   if (eocd.sig == END_SIG) {
       lseek(hFile, eocd.offset_of_central_dir, SEEK_SET);
 
-      for (iIndex = 0; (unsigned) iIndex < eocd.tot_entries; iIndex++)
-         {
-         read(hFile, (char *) &cd, sizeof(ZIPENTRY));
-         if (cd.sig == CENTRAL_SIG)
-            {
+      for (iIndex = 0; (unsigned)iIndex < eocd.tot_entries; iIndex++) {
+         read(hFile, (char *)&cd, sizeof(ZIPENTRY));
+         if (cd.sig == CENTRAL_SIG) {
             read(hFile, szEntryName, cd.filename_length);
             szEntryName[cd.filename_length] = 0;
 
             // compare name with file specification.
-            if (Match(szFileName, GetFileName(szEntryName)))
-               {
-               if (++iFound == 1)
-                  {
-                  if (!(*pbPrinted))
-                     {
+            if (Match(szFileName, GetFileName(szEntryName))) {
+               if (++iFound == 1) {
+                  if (!(*pbPrinted)) {
                      pch = getcwd(NULL, MAXPATH);
                      DisplayMessage(IDS_DIRECTORYLINE, pch);
                      free(pch);
                      usLineCount += 2;
                      *pbPrinted = 1;
-                     }
+                  }
 
                   if (!(pfs->byType & FS_DIRECTORY))
                      ShowFileInfo(pfs);
 
-                  }
+               }
 
-               pfs->byType |= FS_ARCHIVE;         // It IS an archive
+               pfs->byType |= FS_ARCHIVE; // It IS an archive
 
                strcpy(pfs->szName, GetFileName(szEntryName));
                pfs->ulSize = cd.uncompressed_size;
                pfs->usDate = cd.date;
                pfs->usTime = cd.time;
                ShowFileInfo(pfs);
-               }
-
-            lseek(hFile, (long) (cd.extra_field_length + cd.file_comment_length),
-                  SEEK_CUR);
             }
-         else
-            {
+
+            lseek(hFile, (long)(cd.extra_field_length + cd.file_comment_length),
+                  SEEK_CUR);
+         } else {
             DisplayMessage(IDS_ARCHIVECORRUPT, pfs->szArchiveName);
             break;
-            }
          }
       }
+   }
 
    close(hFile);
-   return(iFound);
+   return (iFound);
 }
 
 /******************************************************************************
@@ -355,82 +324,77 @@ int PASCAL SearchZIP(PFILESTUFF pfs, PSTR szFileName, PINT pbPrinted)
  *****************************************************************************/
 int PASCAL SearchZOO(PFILESTUFF pfs, PSTR szFileName, PINT pbPrinted)
 {
-   int   hFile;
-   char  *pch;
+   int hFile;
+   char *pch;
 
    ZOOARCHIVE ZOOArchive;
-   ZOOENTRY   ZOOEntry;
+   ZOOENTRY ZOOEntry;
 
-   int   nBytesRead,
-         iFound = 0;
+   int nBytesRead, iFound = 0;
 
-   if ((hFile = open(pfs->szArchiveName, O_RDONLY | O_BINARY)) < 0)
-      {
+   if ((hFile = open(pfs->szArchiveName, O_RDONLY | O_BINARY)) < 0) {
       DisplayMessage(IDS_CANTOPENFILE, pfs->szArchiveName);
-      return(0);
-      }
-
+      return (0);
+   }
    // Read zoo header ...
-   nBytesRead = read(hFile, (char *) &ZOOArchive, sizeof(ZOOARCHIVE));
+   nBytesRead = read(hFile, (char *)&ZOOArchive, sizeof(ZOOARCHIVE));
 
-   if (ZOOArchive.type != ZOO_H_TYPE)                                   //  not a zoo or zoo is corrupted
-      {
+   if (ZOOArchive.type != ZOO_H_TYPE)  //  not a zoo or zoo is corrupted
+   {
       DisplayMessage(IDS_ARCHIVECORRUPT, pfs->szArchiveName);
       close(hFile);
-      return(iFound);
-      }
+      return (iFound);
+   }
 
-   lseek(hFile, ZOOArchive.zoo_start, SEEK_SET);                     //  position file pointer at start of zoo
+   lseek(hFile, ZOOArchive.zoo_start, SEEK_SET);   //  position file pointer at start of zoo
 
-   for (;;)
-      {
+   for (;;) {
       //  read directory entry
-      nBytesRead = read(hFile, (char *) &ZOOEntry, sizeof(ZOOENTRY));
+      nBytesRead = read(hFile, (char *)&ZOOEntry, sizeof(ZOOENTRY));
 
       if (nBytesRead < 1)
          break;
 
-      if (ZOOEntry.zoo_tag != ZOO_TAG)                  //  ERROR !!!
-         {
+      if (ZOOEntry.zoo_tag != ZOO_TAG) //  ERROR !!!
+      {
          DisplayMessage(IDS_ARCHIVECORRUPT, pfs->szArchiveName);
          break;
-         }
+      }
 
-      if (ZOOEntry.next == 0L)        //  no more entries
+      if (ZOOEntry.next == 0L)  //  no more entries
          break;
 
-      if (Match(szFileName, ZOOEntry.fname))          //  do compare
-         {
-         if (++iFound == 1)
-            {
-            if (!(*pbPrinted))
-               {
+      if (Match(szFileName, ZOOEntry.fname)) //  do compare
+      {
+         if (++iFound == 1) {
+            if (!(*pbPrinted)) {
                pch = getcwd(NULL, MAXPATH);
                DisplayMessage(IDS_DIRECTORYLINE, pch);
                free(pch);
                usLineCount += 2;
                *pbPrinted = 1;
-               }
+            }
 
             if (!(pfs->byType & FS_DIRECTORY))
                ShowFileInfo(pfs);
-            }
+         }
 
-         pfs->byType |= FS_ARCHIVE;                  // it IS an archive
+         pfs->byType |= FS_ARCHIVE; // it IS an archive
 
          strcpy(pfs->szName, ZOOEntry.fname);
          pfs->ulSize = ZOOEntry.org_size;
          pfs->usDate = ZOOEntry.date;
          pfs->usTime = ZOOEntry.time;
          ShowFileInfo(pfs);
-         }
-
-      lseek(hFile, ZOOEntry.next, SEEK_SET);
       }
 
+      lseek(hFile, ZOOEntry.next, SEEK_SET);
+   }
+
    close(hFile);
-   return(iFound);
+   return (iFound);
 }
+
 /******************************************************************************
  *
  *          Name:   SearchLZH
@@ -447,89 +411,81 @@ int PASCAL SearchZOO(PFILESTUFF pfs, PSTR szFileName, PINT pbPrinted)
  *****************************************************************************/
 int PASCAL SearchLZH(PFILESTUFF pfs, PSTR szFileName, PINT pbPrinted)
 {
-   int   hFile,
-         iFound = 0,
-         iItemsRead;
+   int hFile, iFound = 0, iItemsRead;
    USHORT iCRC;
 
-   char  *szEntryName,
-         *pch;
+   char *szEntryName, *pch;
 
    ULONG ulOffset;
 
    LZHENTRY header;
 
-   if ( (hFile = open(pfs->szArchiveName, O_RDONLY | O_BINARY)) < 0)
-      {
+   if ((hFile = open(pfs->szArchiveName, O_RDONLY | O_BINARY)) < 0) {
       DisplayMessage(IDS_CANTOPENFILE, pfs->szArchiveName);
-      return(0);
-      }
+      return (0);
+   }
 
-   if ((szEntryName = (char *) malloc(80)) == NULL)
-      {
+   if ((szEntryName = (char *)malloc(80)) == NULL) {
       DisplayMessage(IDS_OUTOFMEMORY, __FILE__, __LINE__);
       close(hFile);
       exit(1);
-      }
+   }
 
-   for (;;)
-      {
+   for (;;) {
       ulOffset = tell(hFile);
 
-      memset((void *) &header, '\0', sizeof(LZHENTRY));
-      iItemsRead = read(hFile, (void *) &header, sizeof(LZHENTRY));
+      memset((void *)&header, '\0', sizeof(LZHENTRY));
+      iItemsRead = read(hFile, (void *)&header, sizeof(LZHENTRY));
 
-      if (header.no_bytes == 0)              //  Finished.  Reached end of archive
+      if (header.no_bytes == 0) //  Finished.  Reached end of archive
          break;
 
-      if (header.type[0] != '-' && header.type[1] != 'l' && header.type[4] != '-')    //  make sure archive is valid
-         {
+      if (header.type[0] != '-' && header.type[1] != 'l' && header.type[4] != '-')  //  make sure archive is valid
+      {
          DisplayMessage(IDS_ARCHIVECORRUPT, pfs->szArchiveName);
          break;
-         }
+      }
 
-       memset(szEntryName, 0, 80);
+      memset(szEntryName, 0, 80);
 
-       read(hFile, szEntryName, header.name_len);
-       szEntryName[header.name_len] = '\0';
+      read(hFile, szEntryName, header.name_len);
+      szEntryName[header.name_len] = '\0';
 
-       read(hFile, (char *) &iCRC, sizeof(iCRC));
+      read(hFile, (char *)&iCRC, sizeof(iCRC));
 
-       if (Match(szFileName, GetFileName(szEntryName)))          //  do compare
-         {
-         if (++iFound == 1)
-            {
-            if (!(*pbPrinted))
-               {
+      if (Match(szFileName, GetFileName(szEntryName)))   //  do compare
+      {
+         if (++iFound == 1) {
+            if (!(*pbPrinted)) {
                pch = getcwd(NULL, MAXPATH);
                DisplayMessage(IDS_DIRECTORYLINE, pch);
                free(pch);
                usLineCount += 2;
                *pbPrinted = 1;
-               }
+            }
 
             if (!(pfs->byType & FS_DIRECTORY))
                ShowFileInfo(pfs);
-            }
+         }
 
          strcpy(pfs->szName, GetFileName(szEntryName));
-         pfs->byType |= FS_ARCHIVE;               // it IS an archive
+         pfs->byType |= FS_ARCHIVE; // it IS an archive
          pfs->ulSize = header.orig_size;
          pfs->usDate = header.date;
          pfs->usTime = header.time;
          ShowFileInfo(pfs);
-         }
+      }
 
       ulOffset += (ULONG) (header.no_bytes + header.size_now + sizeof(iCRC));
 
       lseek(hFile, ulOffset, SEEK_SET);
-      }
+   }
 
    close(hFile);
 
-   free(szEntryName);                 //  free previous allocated memory
+   free(szEntryName);           //  free previous allocated memory
 
-   return(iFound);
+   return (iFound);
 }
 
 /******************************************************************************
@@ -545,17 +501,15 @@ int PASCAL SearchLZH(PFILESTUFF pfs, PSTR szFileName, PINT pbPrinted)
  *
  *****************************************************************************/
 int PASCAL FindEOCD(hZIPFile)
-int     hZIPFile;
+int hZIPFile;
 {
-   char  *pchBuffer,
-         *pchBufPtr;
+   char *pchBuffer, *pchBufPtr;
 
-   LONG  lSize,
-         lIndex;
+   LONG lSize, lIndex;
 
-   int   iTries = 1;
+   int iTries = 1;
 
-   BOOL  bDone = 0;
+   BOOL bDone = 0;
 
    lIndex = 0L;
 
@@ -563,44 +517,40 @@ int     hZIPFile;
 
    lseek(hZIPFile, -lSize, SEEK_END);
 
-   if ((pchBuffer = (char *) malloc((size_t) lSize)) == NULL)
-      {
+   if ((pchBuffer = (char *)malloc((size_t) lSize)) == NULL) {
       DisplayMessage(IDS_OUTOFMEMORY, __FILE__, __LINE__);
       exit(1);
-      }
+   }
 
-   while (tell(hZIPFile) != 0L && !bDone)
-      {
-      if (lseek(hZIPFile, -(lSize * (long) iTries++), SEEK_END) == -1L)
+   while (tell(hZIPFile) != 0L && !bDone) {
+      if (lseek(hZIPFile, -(lSize * (long)iTries++), SEEK_END) == -1L)
          break;
 
-      pchBufPtr = pchBuffer + read(hZIPFile, pchBuffer, (int) lSize);
+      pchBufPtr = pchBuffer + read(hZIPFile, pchBuffer, (int)lSize);
 
-      while (pchBufPtr > pchBuffer)
-         {
-         if ((ULONG) *((ULONG *) pchBufPtr) == END_SIG)
-            {
+      while (pchBufPtr > pchBuffer) {
+         if ((ULONG) * ((ULONG *) pchBufPtr) == END_SIG) {
             bDone = 1;
             break;
-            }
+         }
 
          pchBufPtr--;
          lIndex++;
 
          if (pchBufPtr <= pchBuffer)
-             break;
-         }
+            break;
+      }
 
       if (bDone)
          break;
-      }
+   }
 
    free(pchBuffer);
 
    if (bDone)
       lseek(hZIPFile, -lIndex, SEEK_END);
 
-   return(bDone ? 1 : 0);
+   return (bDone ? 1 : 0);
 }
 
 /*
@@ -612,7 +562,7 @@ int     hZIPFile;
  */
 PSTR PASCAL GetFileName(PSTR szPathName)
 {
-   char  *pchName;
+   char *pchName;
 
    pchName = strrchr(szPathName, '\\');
 
@@ -622,29 +572,26 @@ PSTR PASCAL GetFileName(PSTR szPathName)
    if (pchName)
       pchName++;
 
-   return(pchName ? pchName : szPathName);
+   return (pchName ? pchName : szPathName);
 }
 
 LPFNARCHIVESEARCH PASCAL GetArchiveSearchFunction(PSTR pchFilename)
 {
-   char  *pchExtension = strrchr(pchFilename, '.');
-   int   iEntry;
+   char *pchExtension = strrchr(pchFilename, '.');
+   int iEntry;
 
    LPFNARCHIVESEARCH lpfn = (LPFNARCHIVESEARCH) NULL;
 
-   if (pchExtension)
-      {
+   if (pchExtension) {
       pchExtension++;
 
-      for (iEntry = 0; iEntry < sizeof(archiveSearch) / sizeof(JUMPTABLEENTRY); iEntry++)
-         if (stricmp(archiveSearch[iEntry].szExtension, pchExtension) == 0)
-            {
+      for (iEntry = 0; iEntry < sizeof(archiveSearch) / sizeof(JUMPTABLEENTRY);
+           iEntry++)
+         if (stricmp(archiveSearch[iEntry].szExtension, pchExtension) == 0) {
             lpfn = archiveSearch[iEntry].lpfn;
             break;
-            }
-      }
-   
-   return(lpfn);
+         }
+   }
+
+   return (lpfn);
 }
-
-

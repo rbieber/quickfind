@@ -21,22 +21,20 @@
 
 #include "crc.h"
 
-struct _selfcheck
-   {
-   char  code[8];
+struct _selfcheck {
+   char code[8];
    ULONG crcval;
-   }
-selfcheck = {"REBEIB\xD7\0"};
+} selfcheck = {
+"REBEIB\xD7\0"};
 
 #define PBUFLEN 10240
 
 // This is my address, encrypted so noone can change it.
 
-char szAddress[] =
-   {
+char szAddress[] = {
    "ßßİİÛÛÙÙ××ÕÕÓÓÑÑÏÏ¿‚…Š…Ç¤ËÅ¡Š„ƒº­×ıûûùù÷÷õõóóññïïííóûøé"
-   "¦¶­ª­¦µĞÑ‰ı³™——••““‘‘‹‹‰şÈÈÁÖ×ÌÂÊ³¿ÔÑ»»¯©§®­Ÿ“%s"
-   };
+       "¦¶­ª­¦µĞÑ‰ı³™——••““‘‘‹‹‰şÈÈÁÖ×ÌÂÊ³¿ÔÑ»»¯©§®­Ÿ“%s"
+};
 
 //******************************************************************************
 //
@@ -58,11 +56,11 @@ void PASCAL DisplayVerificationFailure(void)
 {
    register int iIndex;
 
-   printf("\nYour QF.EXE file has been altered in some way.  In case of a virus of some\n");
+   printf ("\nYour QF.EXE file has been altered in some way.  In case of a virus of some\n");
    printf("kind, execution of this program will be halted.\n\n");
-   printf("Please re-download this from another source, or write the author for an\n");
-   printf("authentic copy.  Please send a self addressed, stamped disk mailer, with\n");
-   printf("a letter stating where you got your copy of Quick Find, to the following\n");
+   printf ("Please re-download this from another source, or write the author for an\n");
+   printf ("authentic copy.  Please send a self addressed, stamped disk mailer, with\n");
+   printf ("a letter stating where you got your copy of Quick Find, to the following\n");
    printf("address:\n\n");
 
    // Decrypt the encrypted address
@@ -70,7 +68,8 @@ void PASCAL DisplayVerificationFailure(void)
    iIndex = 0;
 
    for (iIndex = 0; iIndex < sizeof(szAddress); iIndex++)
-      szAddress[iIndex] = (char) (szAddress[iIndex] ^ ((255 - (iIndex & 254)) | (127 ^ iIndex)));
+      szAddress[iIndex] =
+          (char)(szAddress[iIndex] ^ ((255 - (iIndex & 254)) | (127 ^ iIndex)));
 
    printf("%s", szAddress);
 
@@ -96,25 +95,24 @@ void PASCAL DisplayVerificationFailure(void)
 int PASCAL QFVerify(void)
 {
    ULONG ulFileCRC;
-   char  *pch = szMessages[0];
+   char *pch = szMessages[0];
 
    if (selfcheck.crcval == 0)
-      return(1);
+      return (1);
 
    InitializeCRC(ulFileCRC);
 
-   while (*pch)
-      {
+   while (*pch) {
       ulFileCRC = UpdateCRC(*pch, ulFileCRC);
       pch++;
-      }
+   }
 
    PostConditionCRC(ulFileCRC);
 
    if (ulFileCRC != selfcheck.crcval)
-      return(3);
+      return (3);
 
-   return(2);
+   return (2);
 }
 
 //******************************************************************************
@@ -135,63 +133,55 @@ int PASCAL QFVerify(void)
 //******************************************************************************
 int PASCAL QFWriteVerifyInfo(char *szFileName)
 {
-   int      fh;
+   int fh;
 
-   LONG     ulFileCRC,
-            lSize,
-            lOffset = 0L;
+   LONG ulFileCRC, lSize, lOffset = 0L;
 
-   int      iIndex;
+   int iIndex;
 
    unsigned nBytesRead;
 
-   char     *inbuf,
-            *pch;
+   char *inbuf, *pch;
 
-   int      bFound = 0;
+   int bFound = 0;
 
    if ((fh = open(szFileName, O_RDWR | O_BINARY)) < 0)
-      return(1);
+      return (1);
 
    lSize = lmin(filelength(fh), PBUFLEN);
 
-   if ((inbuf = (char *) malloc((size_t) lSize)) == NULL)
-      {
+   if ((inbuf = (char *)malloc((size_t) lSize)) == NULL) {
       DisplayMessage(IDS_OUTOFMEMORY, __FILE__, __LINE__);
       close(fh);
       c_break();
-      }
+   }
 
    bFound = FALSE;
 
-   while (!bFound && (nBytesRead = read(fh, inbuf, (unsigned int) lSize)) > 0)
-      {
+   while (!bFound && (nBytesRead = read(fh, inbuf, (unsigned int)lSize)) > 0) {
       pch = inbuf;
 
-      for (iIndex = 0; iIndex < (int) nBytesRead; iIndex++, lOffset++, pch++)
-         if (strncmp(pch, selfcheck.code, strlen(selfcheck.code)) == 0)
-            {
+      for (iIndex = 0; iIndex < (int)nBytesRead; iIndex++, lOffset++, pch++)
+         if (strncmp(pch, selfcheck.code, strlen(selfcheck.code)) == 0) {
             bFound = TRUE;
             break;
-            }
-      }
+         }
+   }
 
-   if (!bFound)
-      {
+   if (!bFound) {
       free(inbuf);
       close(fh);
-      return(3);
-      }
+      return (3);
+   }
 
    pch = szMessages[0];
 
    InitializeCRC(ulFileCRC);
 
-   while (*pch)
-      {
+   while (*pch) {
       ulFileCRC = UpdateCRC(*pch, ulFileCRC);
       pch++;
-      }
+   }
 
    PostConditionCRC(ulFileCRC);
 
@@ -201,8 +191,5 @@ int PASCAL QFWriteVerifyInfo(char *szFileName)
    close(fh);
 
    free(inbuf);
-   return(4);
+   return (4);
 }
-
-
-

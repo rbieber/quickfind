@@ -12,18 +12,15 @@
 #define REST         '*'
 #define ANY          '?'
 
-typedef struct tagFILENAME
-   {
-   char  szFName[_MAX_FNAME];
-   char  szExt[_MAX_EXT];
-   }
-FILENAME;
+typedef struct tagFILENAME {
+   char szFName[_MAX_FNAME];
+   char szExt[_MAX_EXT];
+} FILENAME;
 
-typedef FILENAME        *PFILENAME;
-typedef FILENAME NEAR   *NPFILENAME;
-typedef FILENAME FAR    *LPFILENAME;
+typedef FILENAME *PFILENAME;
+typedef FILENAME NEAR *NPFILENAME;
+typedef FILENAME FAR *LPFILENAME;
 
-void PASCAL ParseName(PFILENAME, PSTR);          //  Split filename to nmblk struct
-int  PASCAL MatchWildcards(PSTR, PSTR);          //  Match wildcard specs in arcs
-int  PASCAL Match(PSTR, PSTR);                   //  User called function to Match *, ?
-
+void PASCAL ParseName(PFILENAME, PSTR);   //  Split filename to nmblk struct
+int PASCAL MatchWildcards(PSTR, PSTR); //  Match wildcard specs in arcs
+int PASCAL Match(PSTR, PSTR);   //  User called function to Match *, ?

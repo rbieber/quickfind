@@ -12,10 +12,7 @@
 
 extern char *szMessages[];
 
-extern int  DisplayMessage(int, ...);
+extern int DisplayMessage(int, ...);
 extern BOOL PASCAL ShowNoPromptMessage(int, PSTR);
 extern char PASCAL yesno(int, int, char);
 extern void PASCAL usage(BOOL);
-
-
-
