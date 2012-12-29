@@ -5,7 +5,7 @@ LINKER=wlink
 #LFLAGS = option quiet,stack=8192 debug watcom 
 LFLAGS = option quiet,stack=8192  
 
-OBJS=qf.obj compress.obj qfvfy.obj qfllf.obj qfprint.obj qfdos.obj wildcard.obj
+OBJS=qf.obj compress.obj qfllf.obj qfprint.obj qfdos.obj wildcard.obj
 
 all: qf.exe
 
@@ -21,8 +21,6 @@ qfdos.obj: qfdos.c
 wildcard.obj: wildcard.c 
 
 qfprint.obj: qfprint.c 
-
-qfvfy.obj: qfvfy.c 
 
 compress.obj: compress.c
 

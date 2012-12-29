@@ -79,25 +79,6 @@ int main(int argc, const char **argv)
 
    DisplayMessage(IDS_EGOLINE, VERSION);
 
-#ifdef _DOS
-   switch (QFVerify())          // Test Integrity of QF.EXE
-   {
-   case 0:
-      DisplayMessage(IDS_CANTFINDFILE, *argv);
-      exit(0);
-      break;
-
-   case 1:
-      QFWriteVerifyInfo((const PSTR) (*argv));
-      break;
-
-   case 3:
-      DisplayVerificationFailure();
-      exit(3);
-   }
-
-#endif
-
    ParseEnvironmentOptions("QF_OPT");
 
    if (!(parms(&argc, (const PPSTR) argv + 1) - 1))
