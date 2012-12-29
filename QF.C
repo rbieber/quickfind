@@ -75,6 +75,8 @@ int main(int argc, const char **argv)
 
    PSTR pchTemp = NULL;
 
+   setvbuf(stdout, NULL, _IONBF, 0);
+   
    usFirstDisk = fSwitches = 0;
 
    DisplayMessage(IDS_EGOLINE, VERSION);
