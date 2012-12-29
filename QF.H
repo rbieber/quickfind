@@ -177,11 +177,6 @@ extern void PASCAL ShowFileInfo(PFILESTUFF); // Display g_files structure
 extern int floppies(void);      // Get number of floppy drives on system
 extern int isvalid(int);        // Check to see if drive is valid
 
-extern int PASCAL QFVerify(void);   // Crc-32 check on program title
-extern int PASCAL QFWriteVerifyInfo(const PSTR);   // Crc-32 patch of .EXE file
-extern void PASCAL DisplayVerificationFailure(void);  // show verification failure
-                                                      // message
-
 int PASCAL parms(PINT, PPSTR);  // Get command line options
 void PASCAL walkdirs(PSTR, BOOL, int (PASCAL *) (PSTR)); // Get directories to search
 int PASCAL filefind(PSTR);      // Match specified filespec
