@@ -1,4 +1,4 @@
-This is a program that I wrote about 26 years ago and was my first "Shareware" type of program.
+This is a program that I wrote about 31 years ago and was my first "Shareware" type of program.
 
 The really cool thing about this program is that this was the one I learned C with - and subsequently
 learned every other language that I've learned by taking pieces of this one and rewriting it because
