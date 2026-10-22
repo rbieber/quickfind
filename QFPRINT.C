@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: MIT
+// Licensed under the MIT License. See LICENSE for the full text.
+
 //****************************************************************************
 //
 //          Name:   QFPRINT.C
@@ -8,12 +11,7 @@
 //                      Date:       September 9, 1989
 //                    Author:       Ronald C. Bieber
 //
-//      Copyright 1989 Ronald C. Bieber;  All rights reserved
-//
-//      Do not distribute modified versions without my permission.
-//      Do not remove or alter this notice or any other copyright notice.
-//      If you use this in your own program you must distribute source code.
-//      Do not use any of this in a commercial product.
+//      Copyright 1989 Ronald C. Bieber
 //
 //****************************************************************************
 #include <stdio.h>

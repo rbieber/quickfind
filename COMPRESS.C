@@ -1,10 +1,13 @@
+// SPDX-License-Identifier: MIT
+// Licensed under the MIT License. See LICENSE for the full text.
+
 //*****************************************************************************
 //
 // COMPRESS.C
 //
 // Functions to search .ARC, .PAK, .ZOO, .ZIP, .DWC, .LZS, and .LZH files.
 //
-// Copyright 1989-91 by Quick Solutions Inc;  All rights reserved.
+// Copyright 1989-91 by Quick Solutions Inc.
 //
 //*****************************************************************************
 #include <stdio.h>

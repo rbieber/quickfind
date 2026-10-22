@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: MIT
+// Licensed under the MIT License. See LICENSE for the full text.
+
 //*****************************************************************************
 //
 // QF.H
@@ -5,7 +8,7 @@
 // This file declares variables, structures and macros used by all of the
 // Quick Find modules.
 //
-// Copyright (C) 1989-91 by Quick Solutions, Inc;  All rights reserved.
+// Copyright (C) 1989-91 by Quick Solutions, Inc.
 //
 //*****************************************************************************
 #ifndef __QF_H

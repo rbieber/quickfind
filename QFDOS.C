@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: MIT
+// Licensed under the MIT License. See LICENSE for the full text.
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdarg.h>
@@ -20,7 +23,7 @@ char *szMessages[] = {
    "Quick File Finder for FreeDOS version %s\n"
 #endif
 #endif
-       "Copyright 1989-95 by Ronald C. Bieber; All rights reserved.\n",
+       "Copyright 1989-95 by Ronald C. Bieber; MIT License (see LICENSE).\n",
    "\n%s\n",                    // show a directory line
    "\rUnable to find file %s\n",
    "\nInvalid drive specification.\n",

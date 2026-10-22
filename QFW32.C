@@ -1,10 +1,13 @@
+// SPDX-License-Identifier: MIT
+// Licensed under the MIT License. See LICENSE for the full text.
+
 //*****************************************************************************
 //
 // QFW32.C
 //
 // API layer of DOS functions to DOS/WIN32 Family API functions.
 //
-// Copyright 1993 by Quick Solutions Inc;  All rights reserved.
+// Copyright 1993 by Quick Solutions Inc.
 //
 //*****************************************************************************
 

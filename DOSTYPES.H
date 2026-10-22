@@ -1,10 +1,13 @@
+// SPDX-License-Identifier: MIT
+// Licensed under the MIT License. See LICENSE for the full text.
+
 //*****************************************************************************
 //
 // DOSTYPES.H
 //
 // This file declares types needed in the DOS compiled version of the program.
 //
-// Copyright (C) 1989-91 by Quick Solutions, Inc;  All rights reserved.
+// Copyright (C) 1989-91 by Quick Solutions, Inc.
 //
 //*****************************************************************************
 typedef int BOOL;

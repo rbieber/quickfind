@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: MIT
+// Licensed under the MIT License. See LICENSE for the full text.
+
 #define IDS_EGOLINE               0
 #define IDS_DIRECTORYLINE         1
 #define IDS_CANTFINDFILE          2
